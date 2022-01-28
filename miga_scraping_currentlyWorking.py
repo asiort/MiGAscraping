@@ -1,12 +1,19 @@
 """
-Este script entra en la herramienta MiGA online y extrae la información. 
-"""
-#!/usr/bin/env python3
+INCLUDE A DESCRIPTION
 
+@Dependencies Selenium and ChromeDrive  
+@Author Asier Ortega Legarreta
+@Date 2021/11/25
+@mail asierortega20@gmail.com
+@github github.com/asiort
+"""
+
+from click import Argument
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import NoSuchElementException
 import argparse
 import os
@@ -21,26 +28,20 @@ def arguments():
     -------
     args 
     """
-    parser = argparse.ArgumentParser(description = "Automatic NCBI BLAST searches from a multiFASTA file. \
-                             MultiFASTA can contain either nucleotide sequence or protein sequence. \
-                            ./multiBLAST.py -p <driver-path> -d <in-path> -t <int> -o <out-path> -f nucletotide|protein \
-                             Example of bash execution: \
-                             ./multiBLAST.py -p driverpath/chromedriver -d myFastas/multiFasta.fa -t 4 -o myResults.txt -f nucletotide")
+    parser = argparse.ArgumentParser(description = "Scrapes of the results of MiGA and writes the output with the . \
+                             taxonomy assesment and the closest genome.")
     parser.add_argument('-p', '--driverpath', dest='driverpath', 
                            action = 'store', required=False , 
                            help='The ChromeDriver path (Optional) Default path: chromedriver/chromedriver.')
-    parser.add_argument('-d', '--dir', dest='in_file', 
-                           action = 'store', required=True , 
-                           help='MultiFASTA file.')
     parser.add_argument('-o', '--outpath', dest='out_path',
-                       action = 'store', required=True,
+                       action = 'store', required=False,
                        help = 'Output path')
     parser.add_argument('-v', '--pvalue', dest='pvalue',
                        action = 'store', required=False,
                        help = 'The p_value that will use to asses the taxonomy. Default p_value = 0.05.')
     parser.add_argument('-us', '--username', dest='username',
                        action = 'store', required=False,
-                       help = 'The username of the MiGA Online personal account. Needed for the logging')
+                       help = 'The username (email) of the MiGA Online personal account. Needed for the logging')
     parser.add_argument('-pw', '--passsword', dest='password',
                        action = 'store', required=False,
                        help = 'The password of the MiGA Online personal account. Needed for the loggin.')
@@ -70,7 +71,15 @@ def logging(driver, username, password):
     username_driver.send_keys(username)
     password_driver.send_keys(password)
     login.click()
-    driver.implicitly_wait(5)
+   
+    driver.implicitly_wait(2)
+
+    """
+    Check you logged in successfully
+    """
+    if "email/password" in driver.find_element(By.XPATH, '/html/body/div/div[1]').text:
+        print("\nERROR IN THE LOG IN\nYou introduced an incorrect user or password please try again.")
+        sys.exit()
 
     return driver
 
@@ -350,27 +359,43 @@ def write_sample_output(out_path, dic_sample):
 
 def main():
     """
-    Openning the browser (must have selenium driver according to your chrome version)
+    We get the arguments
     """
-    # os.environ['PATH'] += r"C:/SeleniumDrivers"
-    # driver = webdriver.Chrome()
-    # driver.get('http://microbial-genomes.org/login')
-
-    driver_path = "/usr/bin/chromedriver"
-    driver = webdriver.Chrome(driver_path)
-    driver.get('http://microbial-genomes.org/login')
+    args = arguments()
+    print(args)
+    ## Selenium Driver path
+    if args.driverpath:
+        driver_path = args.driverpath
+    else:
+        driver_path = "/usr/bin/chromedriver" ## Default path
 
     """
     Information and paths
     """   
-    username = "aortega"
-    password = "margulis"
-    out_path = "/home/asier/Escritorio"
-    p_value = 0.05
+    username = args.username
+    password = args.password
+
+    if args.out_path:
+        out_path = args.out_path
+    else:
+        out_path = ""
+    
+    if args.pvalue:
+        p_value = float(args.pvalue)
+    else:
+        p_value = 0.05 ## Default p_value
+
 
     """
-    Log in
+    Opening the browser and Log in
     """
+    try:
+        driver = webdriver.Chrome(driver_path)
+        driver.get('http://microbial-genomes.org/login') ## MiGA url
+    
+    except WebDriverException:
+        print("\n\nYou must include the Google Chrome Driver path. \nMake sure that you have a compatible driver for your Google Chrome browser:  https://sites.google.com/a/chromium.org/chromedriver/home")
+        sys.exit()
 
     driver = logging(driver, username, password)
 
@@ -457,6 +482,7 @@ def main():
     """
     write_output(out_path, result_dic, list_low_quality)
     print(del_genome)
+
     """
     CLOSING THE DRIVER
     """
