@@ -25,6 +25,8 @@ python3 run_MiGAscraping.py -d <driver-path> -o <out-path-dir> -p <float> -u <us
   - p_value to asses the genome taxonomy (Optional). Default value: 0.05.
 - `-u --username USERNAME`
   - Username of the MiGA Online account.
+- `-hi --hide HIDEOPTION`
+  - Hide the browser. Options: 'yes' or 'no'. Default option: 'no'. 
 
 Once you execute the script you will be asked to introduce the password of MiGA Online account. 
  
