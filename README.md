@@ -14,7 +14,7 @@ Scrapes all the results of every genome analysis performed with MiGA (Microbial 
   
  ## Script options:
 ```bash
-python3 run_MiGAscraping.py -d <driver-path> -o <out-path-dir> -p <float> -u <username 'email'> -hi <hide Option: 'yes' or 'no'>
+python3 run_MiGAscraping.py -d <driver-path> -o <out-path-dir> -p <float> -u <username 'email'> -hi <hide_Option:'yes'or'no'>
 ```
 
 - `-d --driverpath DRIVERPATH`
