@@ -1,5 +1,5 @@
 # MiGAscraping
-Scrapes all the results of every genome analysis performed with MiGA Online web tool from your MiGA account and write them in a file. [MiGA Online](http://microbial-genomes.org).
+Scrapes all the results of every genome analysis performed with MiGA (Microbial Genomes Atlas) Online web tool from your MiGA account and write them in a file. [MiGA Online](http://microbial-genomes.org).
 
 - You must have a MiGA account where you uploaded your genomes.
 - Works using Selenium and ChromeDriver. 
