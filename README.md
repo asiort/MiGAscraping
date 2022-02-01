@@ -32,7 +32,7 @@ Once you execute the script you will be asked to introduce the password of MiGA 
  
 Example of bash execution:
 ```bash
-python3 onlineMultiBLASTqueries.py -p driverpath/chromedriver -d myFastas/multiFasta.fa -t 4 -o myResults.txt -f nucletotide
+python3 run_MiGAscraping.py -p driverpath/chromedriver -o results_dir/ -p 0.05 -u example@exampleaccount.com -hi yes
 ```
 ### Move the chromedriver to the default path 
 ```bash
